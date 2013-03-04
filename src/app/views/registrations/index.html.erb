@@ -1,0 +1,147 @@
+<div class="row">
+  <h1>Event Stats</h1>
+  <dl class="tabs five-up">
+    <dd class="active"><a href="#signup">Attendance</a></dd>
+    <dd><a href="#analytics">Analytics</a></dd>
+  </dl>
+  <ul class="tabs-content">
+    <li class="active" id="signupTab">
+      <p class="tip-bar">
+        Wanna get an offline copy? Try export it!
+        <%= link_to("Export", event_registrations_path(@event) + ".csv" , class: "in-btn") %>
+      </p>
+
+      <div style="margin-top:20px">
+        <h3>Total number of attendees: <%= @registrations.count %></h3>
+        <table class="twelve attendance">
+          <thead>
+            <tr>
+              <th>First name</th>
+              <th>Last name</th>
+              <th>Email</th>
+              <% if @event.registration_types.any? %>
+                <th>Ticket Type</th>
+              <% end %>
+            </tr>
+          </thead>
+          <tbody>
+          <% @registrations.each do |registration| %>
+            <tr>
+              <td><%= registration.first_name %></td>
+              <td><%= registration.last_name %></td>
+              <td><%= registration.email %></td>
+              <% if @event.registration_types.any? %>
+                <td><%= registration.registration_type_name %></td>
+              <% end %>
+            </tr>
+          <% end %>
+          </tbody>
+        </table>
+      </div>
+    </li>
+    <li id="analyticsTab">
+      <div class="row">
+        <div class="six columns">
+          <h4>Gender distribution</h4>
+          <div class="row" id="gender-data">
+            <p class="four columns">Male: <%= @genders[:male] %> </p>
+            <p class="eight columns">Female: <%= @genders[:female] %> </p>
+          </div>
+          <div style="height:300px" id="chart"></div>
+        </div>
+        <div class="six columns">
+          <h4>Age distribution</h4>
+          <div style="height:300px" id="age-chart"></div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="twelve columns">
+          <h4>Facebook Likes:</h4>
+          <table class="twelve attendance" id="likes-table">
+            <thead>
+              <tr>
+                <th width="10%">No</th>
+                <th colspan="2" width="40%">Top Likes</th>
+                <th width="40%">Category</th>
+                <th width="10%">Popularity</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% index = 0 %>
+              <% @top_likes.each do |like| %>
+                <tr class="fb-like" data-id="<%= like.page_id %>">
+                  <td><%= index += 1 %></td>
+                  <td class="likes-image">
+                    <img src="https:/graph.facebook.com/<%= like.page_id %>/picture" style="float:left">
+                  </td>
+                  <td class="likes-name"></td>
+                  <td></td>
+                  <td><%= like.count %></td>
+                </tr> 
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </li>
+  </ul>
+</div>
+
+<% content_for :js do %>
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">
+  google.load("visualization", "1", {packages:["corechart"]});
+  google.setOnLoadCallback(init);
+  function init() {
+    var options_gender = {
+      width: 450,
+      height: 300,
+    };
+
+    var data_age = new google.visualization.DataTable();
+    data_age.addColumn('string', 'age group');
+    data_age.addColumn('number', 'attendee number');
+    <% @age_groups.each do |name, count| %>
+    data_age.addRow(['<%= name %>', <%= count %>]);
+    <% end %>
+
+    var data_gender = new google.visualization.DataTable();
+    data_gender.addColumn('string', 'gender');
+    data_gender.addColumn('number', 'attendee');
+    data_gender.addRow(['Male', <%= @genders[:male] %>]);
+    data_gender.addRow(['Female', <%= @genders[:female] %>]);
+
+    var chart_age = new google.visualization.ColumnChart(document.getElementById('age-chart'));
+    var chart_gender = new google.visualization.PieChart(document.getElementById('chart'));
+
+    var options_age = {
+      width: 450,
+      height: 300,
+      animation:{
+        duration: 1000,
+        easing: 'in',
+      },
+      vAxis: { minValue: 0, maxValue: <%= @age_groups.values.sum + 5%> }
+    };
+
+    chart_age.draw(data_age, options_age);
+    chart_gender.draw(data_gender, options_gender);
+  }
+
+  $("tr.fb-like").each(function(){
+    var id = $(this).attr('data-id');
+    var $this = $(this);
+    $.ajax({
+        url: "https:/graph.facebook.com/" + id,
+        type: "get",
+        dataType: "json",
+        success: function(response, textStatus, jqXHR) {
+            var $name = "<div>" + response.name +"</div>";
+            $this.find("td").eq(2).append($name);
+            $this.find("td").eq(3).text(response.category);
+        }
+    });
+  });
+  
+</script>
+<% end %>

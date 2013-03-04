@@ -1,0 +1,79 @@
+<div class="row">
+
+	<h1>New event</h1>
+
+	<%= render 'form' %>
+
+</div>
+<% content_for :js do %>
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=places&sensor=false"></script>
+<script type="text/javascript">
+	// disable form enter key
+	function stopRKey(evt) { 
+	  var evt = (evt) ? evt : ((event) ? event : null); 
+	  var node = (evt.target) ? evt.target : ((evt.srcElement) ? evt.srcElement : null); 
+	  if ((evt.keyCode == 13) && (node.type=="text"))  {return false;} 
+	} 
+
+	document.onkeypress = stopRKey; 
+
+	// google map autocomplete
+	var markers = [];
+	var input = document.getElementById('event_location');
+	var options = {
+	  //componentRestrictions: {country: 'sg'},
+	  types: ['geocode']
+	};
+
+	autocomplete = new google.maps.places.Autocomplete(input, options);
+
+	var map;
+	var singapore = new google.maps.LatLng(1.3667, 103.8);
+
+	map = new google.maps.Map(document.getElementById('map'), {
+	  mapTypeId: google.maps.MapTypeId.ROADMAP,
+	  center: singapore,
+	  zoom: 10,
+	  draggable: false,
+	  zoomControl: false,
+	  streetViewControl: false,
+	  mapTypeControl: false,
+	  rotateControl: false,
+	  scrollwheel: false,
+	  disableDoubleClickZoom: true,
+	});
+
+	google.maps.event.addListener(autocomplete, 'place_changed', function() {
+		var place = autocomplete.getPlace();
+
+		if (!place.geometry) {
+			// Inform the user that a place was not found and return.
+			return;
+		}
+
+		// If the place has a geometry, then present it on a map.
+		if (place.geometry.viewport) {
+			// Use the viewport if it is provided.
+			map.fitBounds(place.geometry.viewport);
+		} else {
+			// Otherwise use the location and set a chosen zoom level.
+			map.setCenter(place.geometry.location);
+			map.setZoom(15);
+
+			var marker = new google.maps.Marker({
+				position: place.geometry.location,
+				map:map,
+				title: place.formatted_address,
+				animation: google.maps.Animation.DROP
+			});
+
+			for (var i = 0; i < markers.length; i++ ) {
+				markers[i].setMap(null);
+			}
+
+			markers.push(marker);
+			marker.setMap(map);
+		}			
+	});
+</script>
+<% end %>

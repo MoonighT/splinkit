@@ -1,0 +1,15 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Event:</b>
+  <%= @registration_type.event_id %>
+</p>
+
+<p>
+  <b>Name:</b>
+  <%= @registration_type.name %>
+</p>
+
+
+<%= link_to 'Edit', edit_registration_type_path(@registration_type) %> |
+<%= link_to 'Back', registration_types_path %>

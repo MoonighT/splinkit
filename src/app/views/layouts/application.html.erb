@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= (content_for? :title) ? (yield :title) : Splinkit %></title>
+    <%= stylesheet_link_tag "application", :media => "all" %>
+    <%= csrf_meta_tags %>
+    <%= render "layouts/ga" if Rails.env == "production" %>
+  </head>
+  <body>
+    <!-- nav -->
+	<div class="fixed contain-to-grid">
+		<nav class="top-bar">
+		  <ul>
+            <li class="name">
+              <h1><%= link_to "Splinkit", "/" %></h1>
+            </li>
+		    <li class="toggle-topbar"><a href="#"></a></li>
+		  </ul>
+		  <section>
+		    <ul class="left">
+              <li>
+                <%= link_to "Events", events_path %>
+              </li>
+              <% if user_signed_in? %>
+                <li>
+                  <%= link_to "My Events", "/my_events" %>
+                </li>
+              <% end %>
+		      <%# <li><a href="#">Organizers</a></li> %>
+		      <%# <li><a href="#">Sponsors</a></li> %>
+		    </ul>
+		    <ul class="right">
+              <li>
+                  <%= link_to "Contact Us", "mailto:contact@splinkit.com" %>
+              </li> 
+              <li>
+                <%= render "devise/menu/login" %>
+              </li>
+		    </ul>
+		  </section>
+		</nav>
+	</div>
+    <!-- end of nav -->
+
+    <%# <p class="notice"><%= notice %1></p> %>
+    <%# <p class="alert"><%= alert %1></p> %>
+
+    <%= yield %>
+    <%= render "layouts/fb" %>
+    <%= javascript_include_tag "application" %>
+    <%= yield :js if content_for? :js %>
+  </body>
+</html>

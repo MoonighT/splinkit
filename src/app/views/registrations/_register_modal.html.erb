@@ -1,0 +1,76 @@
+<% registration = event.registrations.build() %>
+<div id="register-fb-modal" class="reveal-modal medium">
+  <h2 style="margin-bottom:20px">Register</h2>
+  <div class="alert-box alert"></div>
+  <% if event.registration_types.any? %>
+  <div class="twelve columns">
+    <div class="three columns">
+      <label class="inline" style="font-size:18px">Ticket Type:</label>
+    </div>
+    <div class="nine columns">
+      <select class="twelve" name="register-ticket-type">
+      <% event.registration_types.each do |type|%>
+        <option value="<%= type.id %>"><%= type.name%></option>
+      <% end %>
+      </select>
+    </div>
+  </div>
+  <% end %>
+  <div class="twelve columns">
+    <div class="radius progress success"><span class="meter"></span></div>
+  </div>
+  <div class="twelve columns">
+    <button class="social six columns" href="#" id="register-with-fb" diabled="true">Register with Facebook</button>
+    <a href="#" data-reveal-id="register-modal" class="five columns no-fb">
+      <span style="float:left; font-size:32px; margin:auto">:(</span>
+      I don't have a Facebook account
+    </a>
+  </div>
+  <div class="twelve columns">
+    <input class="share" type="checkbox" checked>Share this event on Facebook
+  </div>
+</div>
+
+<div id="register-modal" class="reveal-modal medium">
+  <h2 style="margin-bottom:20px">Register</h2>
+  <div class="alert-box alert"></div>
+  <%= form_for([event, registration]) do |f| %>
+    <% if event.registration_types.any? %>
+    <div class="twelve columns">
+      <div class="four columns">
+        <label class="right inline" style="font-size:18px">Ticket Type:</label>
+      </div>
+      <div class="eight columns">
+        <%= f.select(:registration_type_id,
+                     event.registration_types.map { |type| [type.name, type.id] },
+                     class: "twelve") %>
+      </div>
+    </div>
+    <% end %>
+    <div class="four columns">
+      <label class="right inline">*First name</label>
+    </div>
+    <div class="eight columns">
+      <%= f.text_field :first_name %>
+    </div>
+    <div class="four columns">
+      <label class="right inline">*Last name</label>
+    </div>
+    <div class="eight columns">
+      <%= f.text_field :last_name %>
+    </div>
+    <div class="four columns">
+      <label class="right inline">*Email</label>
+    </div>
+    <div class="eight columns">
+      <%= f.email_field :email %>
+    </div>
+    <div class="tweleve columns">
+      <%= f.submit "Register", class: "clickable register" %>
+    </div>
+  <% end %>
+</div>
+
+<div id="register-success-modal" class="reveal-modal medium">
+  <h2>Successfully registered</h2>
+</div>

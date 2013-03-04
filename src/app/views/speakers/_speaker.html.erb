@@ -1,0 +1,28 @@
+<dl class="speaker">
+	<dt><%= image_tag speaker.photo.url(:standard) %></dt>
+	<dd>
+		<ul>
+			<li>
+				<a href="#"><%= speaker.name %></a>
+			</li>
+			<li>
+				<i style="font-size:90%"><%= speaker.position %></i>
+			</li>
+			<li>
+				<p style="font-size:90%"><%= speaker.description %></p>
+			</li>
+		</ul>
+	</dd>
+</dl>
+
+<!-- <b>Name:</b>
+<%= speaker.name %><br />
+<b>Position:</b>
+<%= speaker.position %><br />
+<b>Desc:</b>
+<%= speaker.description %>
+<br />
+<div class="qq-upload-button speaker-photo-uploader" data-action="<%= speaker_url(speaker) %>/photo.json">
+  Change
+</div>
+<hr /> -->

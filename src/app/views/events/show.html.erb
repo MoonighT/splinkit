@@ -1,0 +1,60 @@
+<%= render(@event) %>
+
+<% content_for :title do %>
+  <%= @event.name + " - Splinkit" %>
+<% end %>
+
+<% content_for :js do %>
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=places&sensor=false"></script>
+<script type="text/javascript">
+  var marker;
+  var map;
+  var geocoder;
+  var singapore = new google.maps.LatLng(1.3667, 103.8);
+  // is there another way to retrieve event location information?
+  var place = document.getElementById('event_location').innerHTML;
+
+  // initialize the map
+  map = new google.maps.Map(document.getElementById('map'), {
+    mapTypeId: google.maps.MapTypeId.ROADMAP,
+    center: singapore,
+    zoom: 10,
+    draggable: true,
+    zoomControl: true,
+    streetViewControl: false,
+    mapTypeControl: false,
+    rotateControl: false,
+    scrollwheel: true,
+    disableDoubleClickZoom: false,
+  });
+
+  geocoder = new google.maps.Geocoder();
+
+  geocoder.geocode({'address': place}, function(results, status) {
+    if (status == google.maps.GeocoderStatus.OK) {
+    	var result = results[0];
+      var get_there_btn = document.getElementById('get-there');
+      get_there_btn.href = 'http://maps.google.com/maps?q=' + result.formatted_address;  
+
+      map.setCenter(results[0].geometry.location);
+      map.setZoom(15);
+
+      var marker = new google.maps.Marker({
+          map: map, 
+          position: results[0].geometry.location,
+          title: place.name,
+          animation: google.maps.Animation.DROP
+      });
+    }
+  });
+
+  // auto-resize the title
+  $temp = $(".title").find('h1');
+
+  while($temp.height() > 100) {
+    var current_size = $temp.css("font-size");
+    var new_size = parseFloat(current_size, 10) - 2;
+    $temp.css("font-size", new_size);
+  }
+</script>
+<% end %>

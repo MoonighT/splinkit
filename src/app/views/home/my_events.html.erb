@@ -1,0 +1,68 @@
+<div class="row" style="margin-top:20px">
+  <div class="four columns leftmost" style="text-align:center; margin-top:10px">
+    <a href="https://www.facebook.com/<%= current_user.uid%>"><img src="http://graph.facebook.com/<%= current_user.uid%>/picture?type=large"></a>
+    <h3><%= current_user.name %></h3>
+    <p><%= current_user.email %></p>
+  </div>
+  <div class="eight columns rightmost">
+    <dl class="tabs">
+      <dd class="active"><a href="#event">Events</a></dd>
+    </dl>
+    <ul class="tabs-content">
+      <li class="active" id="eventTab">
+        <div id="upcoming-events">
+          <div class="row">
+            <% @events.each do |event| %>
+              <div class="six columns featured-event">
+                <%= link_to '', event, :class=>'event' %>
+                <div class="event-meta">
+                  <h2><%= event.name %></h2>
+                  <p class="attendee"><%= event.start_date.strftime("%d/%m/%Y") %></p>
+                  <p><%= event.location %></p>
+                </div>
+                <div class="shadowbox" style="background-image:url('<%= event.banner_url %>')"></div>
+                <span class="mask" style="z-index:3">
+                  <%= link_to '', event, :class=>'event' %>
+                  <%= link_to 'Edit',edit_event_path(event), :class=>'in-btn' %>
+                  <%= link_to 'Stats',event_registrations_path(event), :class=>"in-btn stats" %>
+                  <%# link_to 'Delete', event, method: :delete, data: { confirm: 'Are you sure?' }, :class=>"in-btn del" %>
+                </span>
+              </div>
+              <div></div>
+            <% end %>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>    
+</div>
+<% content_for :js do %>
+<script type="text/javascript">
+  $(".featured-event").each(function(index) {
+    while($(this).find('h2').height() > 92) {
+      var current_size = $(this).find('h2').css("font-size");
+      var new_size = parseFloat(current_size, 10) - 2;
+      $(this).find('h2').css("font-size", new_size);
+    }
+    var template = Math.floor(Math.random() * 5);
+    switch(template) {
+      case 0:
+        $(this).find('.event-meta').addClass('meta-one');
+        break;
+      case 1:
+        $(this).find('.event-meta').addClass('meta-two');
+        break;
+      case 2:
+        $(this).find('.event-meta').addClass('meta-three'); 
+        break;
+      case 3:
+        $(this).find('.event-meta').addClass('meta-four'); 
+        break;
+      default:
+        $(this).find('.event-meta').addClass('meta-five'); 
+        break;
+    }
+  });
+</script>
+<% end %>
+

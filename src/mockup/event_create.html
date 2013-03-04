@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Geekcamp SG 2012</title>
+	<meta charset="UTF-8">
+	<meta name="description" content="" />  
+	<script type="text/javascript" src="js/jquery-1.8.2.js"></script>
+	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=places&sensor=false"></script>
+</head>
+<body>
+	<div class="fixed contain-to-grid">
+		<nav class="top-bar">
+		  <ul>
+		    <li class="name"><a href="#" style="padding:0"><img src="images/logo.png" style="border:none"></a></li>
+		    <li class="toggle-topbar"><a href="#"></a></li>
+		  </ul>
+		  <section>
+		    <ul class="left">
+		      <li><a href="#">Events</a></li>
+		      <li><a href="#">Organizers</a></li>
+		      <li><a href="#">Sponsors</a></li>
+		    </ul>
+		    <ul class="right">
+		      <li><a href="#" id="testtest">Login</a></li>
+		    </ul>
+		  </section>
+		</nav>
+	</div>
+<!--
+	<div class="row">
+		<div class="four columns featured-event">
+			<a href="#"></a>
+			<div class="event-meta meta-one">
+				<h2>GeekCamp Singapore</h2>
+				<p class="attendee">1389</p>
+				<p>NUS Hackers</p>
+			</div>
+			<div class="shadowbox">
+				<img src="images/cover.jpg"/>
+			</div>
+		</div>
+		<div class="four columns featured-event">
+			<a href="#"></a>
+			<div class="event-meta meta-two">
+				<h2>NUS Final Examination</h2>
+				<p class="attendee">0</p>
+				<p>Evil lecturers</p>
+			</div>
+			<div class="shadowbox">
+				<img src="images/speaker3.jpg"/>
+			</div>
+		</div>
+		<div class="four columns featured-event">
+			<a href="#"></a>
+			<div class="event-meta meta-three">
+				<h2>CS3216 Consultation</h2>
+				<p class="attendee">123</p>
+				<p>CS3216 Team</p>
+			</div>
+			<div class="shadowbox">
+				<img src="images/landing_4.jpg"/>
+			</div>
+		</div>
+	</div>
+	-->
+
+	<div class="row" style="margin-top:20px">
+		<h2>Create New Event</h2>
+		<dl class="tabs">
+			<dd class="active"><a href="#detail">Event details</a></dd>
+			<dd><a href="#registration">Registration setting</a></dd>
+			<dd><a href="#advanced">Preview and advanced</a></dd>
+		</dl>
+		<ul class="tabs-content">
+			<li class="active" id="detailTab">
+				<p class="tweleve tip-bar">
+					Want a quick sign up page? Fill in the Event details and launch it right away!
+					<button class="clickable">Launch Event</button>
+				</p>
+				<div class="row">
+					<div class="seven columns">
+						<form>
+							<div class="row">
+								<div class="three columns">
+									<label class="right inline">Event name:</label>
+								</div>
+								<div class="nine columns">
+									<input type="text" name="name">
+								</div>
+							</div>
+							<div class="row">
+								<div class="three columns">
+									<label class="right inline">Starting time:</label>
+								</div>
+								<div class="nine columns">
+									<input type="date" name="starting-date">
+								</div>
+							</div>
+							<div class="row">
+								<div class="three columns">
+									<label class="right inline">Ending time:</label>
+								</div>
+								<div class="nine columns">
+									<input type="date" name="ending-date">
+								</div>
+							</div>
+							<div class="row">
+								<div class="three columns">
+									<label class="right inline">Description:</label>
+								</div>
+								<div class="nine columns">
+									<textarea rows=3 style="resize:none" name="description"></textarea>
+								</div>
+							</div>
+							<div class="row">
+								<div class="three columns">
+									<label class="right inline">Location:</label>
+								</div>
+								<div class="nine columns">
+									<input type="text" id="searchTextField" name="location"/>
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="five columns">
+						<div id="map" class="tweleve" style="height:240px"></div>
+					</div>
+				</div>
+			</li>
+			<li id="registrationTab">
+				<p class="tweleve tip-bar">
+					Choose the fields you want your attendees to fill! And fire it up!
+					<button class="clickable">Launch Event</button>
+				</p>
+			</li>
+			<li id="advancedTab">
+				<p class="tweleve tip-bar">Look below and see how your event page would finally look like!
+					<button class="clickable">Launch Event</button>
+				</p>
+				<div class="twevele columns">
+					<div class="row" style="margin-bottom: 10px">
+					<div class="banner" id="banner-image" style="background-image: url('images/cover.jpg')">
+						<div class="edit-wrapper banner">
+							<div class="inner-wrapper banner">
+								<div id="title_container"></div>
+								<div id="subtitle_container"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="eight columns leftmost">
+						<dl class="tabs four-up">
+							<dd class="active"><a href="#home">Home</a></dd>
+							<dd><a href="#program">Program</a></dd>
+							<dd><a href="#sponsor">Sponsors</a></dd>
+							<dd><a href="#attendee">Attendees</a></dd>
+						</dl>
+
+						<ul class="tabs-content">
+							<!-- showing basic information of the event -->
+						    <li class="active" id="homeTab">
+						  	    <div id="featured">
+							  		<img src="images/show1.jpg"/>
+							  		<img src="images/show2.jpg"/>
+							  		<img src="images/show3.jpg"/>
+								</div>
+								<div id="description_container"></div>
+								<div class="row">
+									<div class="six columns">
+										<p style="font-weight:bold">Brought to you by:</p>
+										<img src="images/organizer.png" width="100%">
+										<a href="#" style="font-size:100%; font-weight:bold">GeekCamp</a>
+										<p>geeks and nerds trying to make some differences! :D</p>
+										<ul>
+										<li>Jay Teo Jun Kai</li>
+										<li>Han Yu</li>
+										<li>Yang Mansheng</li>
+										<li>Meng Kaizhi</li>
+										</ul>
+									</div>
+									<div class="six columns">
+										<p style="font-weight:bold">Location and time:</p>
+										<iframe class="map-placeholder" width="100%" height="160" src="http://maps.google.com/maps?f=q&t=m&z=5&output=embed"  frameborder="0" style="margin-bottom: 10px"></iframe>
+										<span class="icon medium" data-icon="6"></span>Saturday, 10-12 Oct, 4.30pm-7.30pm <br>
+										<span class="icon medium" data-icon="y"></span>Marina Bay, <a href="#">50 Kent Ridge Crescent, Singapore 119279</a>
+									</div>
+								</div>	
+						    </li>
+						    <!-- showing the detailed programs of the event -->
+						  	<li id="programTab">
+						  		<p style="font-weight: bold">Speakers:</p>
+						  		<div class="row">
+						  			<dl class="speaker">
+					  					<dt>
+					  						<img src="images/speaker1.jpg">
+					  					</dt>
+					  					<dd>
+					  						<ul>
+					  							<li>
+					  								<a href="#">Jay Teo Jun Kai</a>
+					  							</li>
+					  							<li>
+					  								<i style="font-size:90%">CEO, SplinkIt</i>
+					  							</li>
+					  							<li>
+					  								<p style="font-size:90%">Jay is a great visionary in technopreneurship!</p>
+					  							</li>
+					  						</ul>
+					  					</dd>
+					  				</dl>
+					  				<dl class="speaker">
+					  					<dt>
+					  						<img src="images/speaker2.jpg">
+					  					</dt>
+					  					<dd>
+					  						<ul>
+					  							<li>
+					  								<a href="#">Yang Mansheng</a>
+					  							</li>
+					  							<li>
+					  								<i style="font-size:90%">CTO, SplinkIt</i>
+					  							</li>
+					  							<li>
+					  								<p style="font-size:90%">Mansheng is quite talented in IT.</p>
+					  							</li>
+					  						</ul>
+					  					</dd>
+					  				</dl>
+					  				<dl class="speaker">
+					  					<dt>
+					  						<img src="images/speaker3.jpg">
+					  					</dt>
+					  					<dd>
+					  						<ul>
+					  							<li>
+					  								<a href="#">Han Yu</a>
+					  							</li>
+					  							<li>
+					  								<i style="font-size:90%">COO, SplinkIt</i>
+					  							</li>
+					  							<li>
+					  								<p style="font-size:90%">Han Yu is a very gifted operational manager.</p>
+					  							</li>
+					  						</ul>
+					  					</dd>
+					  				</dl>
+						  		</div>
+								<p style="font-weight: bold">10th October 2012</p>
+								<div class="row">
+									<div class="twelve columns">
+										<table class="program">
+											<tbody>
+												<tr>
+													<td width="20%">
+														<p><span class="icon small" data-icon="t"></span>09:00am</p>
+													</td>
+													<td width="80%">
+														<p style="font-weight: bold">Registration</p>
+													</td>
+												</tr>
+												<tr>
+													<td width="20%">
+														<p><span class="icon small" data-icon="t"></span>10:00am</p>
+													</td>
+													<td width="80%">
+														<p style="font-weight: bold">Talk 1 - How to raise Venture Funding</p>
+														<p style="font-size:x-small">Mr Jay Teo Jun Kai</p>
+													</td>
+												</tr>
+												<tr>
+													<td width="20%">
+														<p><span class="icon small" data-icon="t"></span>12:00pm</p>
+													</td>
+													<td width="80%">
+														<p style="font-weight: bold">Talk 2 - How to raise Venture Funding</p>
+														<p style="font-size: x-small">Mr Jay Teo Jun Kai</p>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>		
+								</div>
+								<p style="font-weight: bold">11th October 2012</p>
+								<div class="row">
+									<div class="twelve columns">
+										<table class="program">
+											<tbody>
+												<tr>
+													<td width="20%">
+														<p><span class="icon small" data-icon="t"></span>09:00am</p>
+													</td>
+													<td width="80%">
+														<p style="font-weight: bold">Registration</p>
+													</td>
+												</tr>
+												<tr>
+													<td width="20%">
+														<p><span class="icon small" data-icon="t"></span>10:00am</p>
+													</td>
+													<td width="80%">
+														<p style="font-weight: bold">Talk 1 - How to raise Venture Funding</p>
+														<p style="font-size:x-small">Mr Jay Teo Jun Kai</p>
+													</td>
+												</tr>
+												<tr>
+													<td width="20%">
+														<p><span class="icon small" data-icon="t"></span>12:00pm</p>
+													</td>
+													<td width="80%">
+														<p style="font-weight: bold">Talk 2 - How to raise Venture Funding</p>
+														<p style="font-size: x-small">Mr Jay Teo Jun Kai</p>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>		
+								</div>
+								<p style="font-weight: bold">12th October 2012</p>
+								<div class="row">
+									<div class="twelve columns">
+										<table class="program">
+											<tbody>
+												<tr>
+													<td width="20%">
+														<p><span class="icon small" data-icon="t"></span>09:00am</p>
+													</td>
+													<td width="80%">
+														<p style="font-weight: bold">Registration</p>
+													</td>
+												</tr>
+												<tr>
+													<td width="20%">
+														<p><span class="icon small" data-icon="t"></span>10:00am</p>
+													</td>
+													<td width="80%">
+														<p style="font-weight: bold">Talk 1 - How to raise Venture Funding</p>
+														<p style="font-size:x-small">Mr Jay Teo Jun Kai</p>
+													</td>
+												</tr>
+												<tr>
+													<td width="20%">
+														<p><span class="icon small" data-icon="t"></span>12:00pm</p>
+													</td>
+													<td width="80%">
+														<p style="font-weight: bold">Talk 2 - How to raise Venture Funding</p>
+														<p style="font-size: x-small">Mr Jay Teo Jun Kai</p>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>		
+								</div>
+						  	</li>
+						  	<li id="sponsorTab">
+						  		under construct...
+						  	</li>
+						  	<li id="attendeeTab">
+						  		<p>Attendees:<b id="attendeeNum">183</b> in total</p>
+						  		<div class="row">
+						  			<dl class="attendee">
+					  					<dt>
+					  						<img src="images/speaker1.jpg">
+					  					</dt>
+					  					<dd>
+					  						<ul>
+					  							<li>
+					  								<a href="#">Jay Teo Jun Kai</a>
+					  							</li>
+					  							<li>
+					  								<p>CEO, SplinkIt</p>
+					  							</li>
+					  						</ul>
+					  					</dd>
+					  				</dl>
+					  				<dl class="attendee">
+					  					<dt>
+					  						<img src="images/speaker2.jpg">
+					  					</dt>
+					  					<dd>
+					  						<ul>
+					  							<li>
+					  								<a href="#">Yang Mansheng</a>
+					  							</li>
+					  							<li>
+					  								<p>CTO, SplinkIt</p>
+					  							</li>
+					  						</ul>
+					  					</dd>
+					  				</dl>
+					  				<dl class="attendee">
+					  					<dt>
+					  						<img src="images/speaker3.jpg">
+					  					</dt>
+					  					<dd>
+					  						<ul>
+					  							<li>
+					  								<a href="#">Han Yu</a>
+					  							</li>
+					  							<li>
+					  								<p>COO, SplinkIt</p>
+					  							</li>
+					  						</ul>
+					  					</dd>
+					  				</dl>
+					  				<dl class="attendee">
+					  					<dt>
+					  						<img src="images/speaker3.jpg">
+					  					</dt>
+					  					<dd>
+					  						<ul>
+					  							<li>
+					  								<a href="#">Han Yu</a>
+					  							</li>
+					  							<li>
+					  								<p>COO, SplinkIt</p>
+					  							</li>
+					  						</ul>
+					  					</dd>
+					  				</dl>
+					  				<dl class="attendee">
+					  					<dt>
+					  						<img src="images/speaker3.jpg">
+					  					</dt>
+					  					<dd>
+					  						<ul>
+					  							<li>
+					  								<a href="#">Han Yu</a>
+					  							</li>
+					  							<li>
+					  								<p>COO, SplinkIt</p>
+					  							</li>
+					  						</ul>
+					  					</dd>
+					  				</dl>
+					  				<dl class="attendee">
+					  					<dt>
+					  						<img src="images/speaker3.jpg">
+					  					</dt>
+					  					<dd>
+					  						<ul>
+					  							<li>
+					  								<a href="#">Han Yu</a>
+					  							</li>
+					  							<li>
+					  								<p>COO, SplinkIt</p>
+					  							</li>
+					  						</ul>
+					  					</dd>
+					  				</dl>
+					  				<dl class="attendee">
+					  					<dt>
+					  						<img src="images/speaker3.jpg">
+					  					</dt>
+					  					<dd>
+					  						<ul>
+					  							<li>
+					  								<a href="#">Han Yu</a>
+					  							</li>
+					  							<li>
+					  								<p>COO, SplinkIt</p>
+					  							</li>
+					  						</ul>
+					  					</dd>
+					  				</dl>
+					  				<dl class="attendee">
+					  					<dt>
+					  						<img src="images/unknown_attendee.png">
+					  					</dt>
+					  					<dd>
+					  						<ul>
+					  							<li>
+					  								<a href="#">Han Yu</a>
+					  							</li>
+					  							<li>
+					  								<p>COO, SplinkIt</p>
+					  							</li>
+					  						</ul>
+					  					</dd>
+					  				</dl>
+						  		</div>
+						  	</li>
+						</ul>
+					</div>
+					<div class="four columns rightmost">
+						<div>
+							<button class="clickable register" href="#" id="register_now">Register Now</button>
+						</div>
+						
+						<div style="margin-top:20px" align="center">
+							<span class="icon social x-large" data-icon="F"></span>
+							<span class="icon social x-large" data-icon="E"></span>
+							<span class="icon social x-large" data-icon="G"></span>
+							<span class="icon social x-large" data-icon="I"></span>
+						</div>
+						<div id="sponsors" style="margin-top:12px; border:1px solid #EFEFEF; padding:10px">
+							<strong style="color:grey">Sponsored by:</strong>
+							<img src="images/sp1.png" width="80%" style="margin-bottom:12px; margin-left:10%">
+							<img src="images/sp2.png" width="80%" style="margin-bottom:12px; margin-left:10%">
+							<img src="images/sp3.png" width="80%" style="margin-bottom:12px; margin-left:10%">
+							<img src="images/sp4.jpg" width="80%" style="margin-bottom:12px; margin-left:10%">
+							<img src="images/sp5.jpg" width="80%" style="margin-bottom:12px; margin-left:10%">
+						</div>
+					</div>
+				</div>
+
+				</div>
+				
+			</li>
+		</ul>
+	</div>
+
+<!-- ===================================== START FOOTER ===================================== -->	
+
+	<script type="text/javascript">
+		var markers = [];
+		var input = document.getElementById('searchTextField');
+		var options = {
+		  types: ['establishment'],
+		  componentRestrictions: {country: 'sg'}
+		};
+
+		autocomplete = new google.maps.places.Autocomplete(input, options);
+
+		var map;
+		var singapore = new google.maps.LatLng(1.3667, 103.8);
+
+		map = new google.maps.Map(document.getElementById('map'), {
+		  mapTypeId: google.maps.MapTypeId.ROADMAP,
+		  center: singapore,
+		  zoom: 10,
+		  draggable: false,
+		  zoomControl: false,
+		  streetViewControl: false,
+		  mapTypeControl: false,
+		  rotateControl: false,
+		  scrollwheel: false,
+		  disableDoubleClickZoom: true,
+		});
+
+		google.maps.event.addListener(autocomplete, 'place_changed', function() {
+			var place = autocomplete.getPlace();
+
+			if (!place.geometry) {
+				// Inform the user that a place was not found and return.
+				return;
+			}
+
+			// If the place has a geometry, then present it on a map.
+			if (place.geometry.viewport) {
+				// Use the viewport if it is provided.
+				map.fitBounds(place.geometry.viewport);
+			} else {
+				// Otherwise use the location and set a chosen zoom level.
+				map.setCenter(place.geometry.location);
+				map.setZoom(15);
+
+				var marker = new google.maps.Marker({
+					position: place.geometry.location,
+					map:map,
+					title: place.name,
+					animation: google.maps.Animation.DROP
+				});
+
+				for (var i = 0; i < markers.length; i++ ) {
+					markers[i].setMap(null);
+				}
+
+				markers.push(marker);
+				marker.setMap(map);
+			}			
+		});
+	</script>
+	<script type="text/javascript" src="js/modernizr.foundation.js"></script>
+	<script type="text/javascript" src="js/foundation.min.js"></script>
+	<script type="text/javascript" src="js/app.js"></script>
+	<script type="text/javascript" src="js/jquery.foundation.tabs.js"></script>
+	<script type="text/javascript" src="js/jquery.foundation.topbar.js"></script>
+	<script type="text/javascript" src="js/foundation.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/foundation.css">
+	<link rel="stylesheet" type="text/css" href="css/style.css" media="all" />      
+</body>
+</html>

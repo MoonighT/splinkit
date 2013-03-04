@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Geekcamp SG 2012</title>
+	<meta charset="UTF-8">
+	<meta name="description" content="" />  
+	<script type="text/javascript" src="foundation/javascripts/jquery.js"></script>
+	<script type="text/javascript" src="http://documentcloud.github.com/underscore/underscore-min.js"></script>
+	<script type="text/javascript" src="http://documentcloud.github.com/backbone/backbone-min.js"></script>
+   	<script type="text/javascript" src="js/model.js"></script>
+	<script type="text/javascript" src="js/view.js"></script>   
+</head>
+<body>
+
+<!-- ===================================== START TEMPLATE ===================================== -->
+<script type="text/template" id="title_template">
+	<div class="edit-wrapper title">
+		<p><%= title %></p>
+		<span class="mask">
+			<span class="edit-btn" id="edit-title" data-reveal-id="event_title_form">Edit title</span>				
+		</span>
+	</div>	
+</script>
+<script type="text/template" id="subtitle_template">
+	<div class="edit-wrapper subtitle">
+		<p><%= start_date %> <br> <%= location %></p>
+		<span class="mask">
+			<span class="edit-btn" id="edit-subtitle"><a style="color: white;" href="#" data-reveal-id="myModal">Edit details</a></span>	
+		</span>
+	</div>
+</script>
+<script type="text/template" id="description_template">
+	<div class="description edit-wrapper">
+		<p><%= description %></p>
+		<span class="mask">
+			<span class="edit-btn" id="edit-description"><a style="color: white;" href="#" data-reveal-id="myModal">Edit Description</a></span>				
+		</span>
+	</div>
+</script>
+<!-- ===================================== END TEMPLATE ===================================== -->
+
+	<div class="fixed contain-to-grid">
+		<nav class="top-bar">
+		  <ul>
+		    <li class="name"><h1><a href="#" >SplinkIt</a></h1></li>
+		    <li class="toggle-topbar"><a href="#"></a></li>
+		  </ul>
+		  <section>
+		    <ul class="left">
+		      <li><a href="#">Events</a></li>
+		      <li><a href="#">Organizers</a></li>
+		      <li><a href="#">Sponsors</a></li>
+		    </ul>
+		    <ul class="right">
+		      <li><a href="#">Login</a></li>
+		    </ul>
+		  </section>
+		</nav>
+	</div>
+	<div class="row" style="margin-bottom: 10px">
+		<div class="banner" id="banner-image" style="background-image: url('images/cover.jpg')">
+			<div class="edit-wrapper banner">
+				<div class="inner-wrapper banner">
+					<div id="title_container"></div>
+					<div id="subtitle_container"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="eight columns">
+			<dl class="tabs three-up">
+				<dd class="active"><a href="#home">Home</a></dd>
+				<dd><a href="#program">Program</a></dd>
+				<dd><a href="#sponsor">Sponsors</a></dd>
+			</dl>
+
+			<ul class="tabs-content">
+				<!-- showing basic information of the event -->
+			    <li class="active" id="homeTab">
+			  	    <div id="featured">
+				  		<img src="images/show1.jpg"/>
+				  		<img src="images/show2.jpg"/>
+				  		<img src="images/show3.jpg"/>
+					</div>
+					<div id="description_container"></div>
+					<div class="row">
+						<div class="six columns">
+							<p style="font-weight:bold">Brought to you by:</p>
+							<img src="images/organizer.png" width="100%">
+							<a href="#" style="font-size:100%; font-weight:bold">GeekCamp</a>
+							<p>geeks and nerds trying to make some differences! :D</p>
+							<ul>
+							<li>Jay Teo Jun Kai</li>
+							<li>Han Yu</li>
+							<li>Yang Mansheng</li>
+							<li>Meng Kaizhi</li>
+							</ul>
+						</div>
+						<div class="six columns">
+							<p style="font-weight:bold">Location and time:</p>
+							<iframe class="map-placeholder" width="100%" height="160" src="http://maps.google.com/maps?f=q&t=m&z=5&output=embed"  frameborder="0" style="margin-bottom: 10px"></iframe>
+							<span class="icon medium" data-icon="6"></span>Saturday, 10-12 Oct, 4.30pm-7.30pm <br>
+							<span class="icon medium" data-icon="y"></span>Marina Bay, <a href="#">50 Kent Ridge Crescent, Singapore 119279</a>
+						</div>
+					</div>	
+			    </li>
+			    <!-- showing the detailed programs of the event -->
+			  	<li id="programTab">
+			  		<p style="font-weight: bold">Speakers:</p>
+			  		<div class="row">
+			  			<dl class="speaker">
+		  					<dt>
+		  						<img src="images/speaker1.jpg">
+		  					</dt>
+		  					<dd>
+		  						<ul>
+		  							<li>
+		  								<a href="#">Jay Teo Jun Kai</a>
+		  							</li>
+		  							<li>
+		  								<i style="font-size:90%">CEO, SplinkIt</i>
+		  							</li>
+		  							<li>
+		  								<p style="font-size:90%">Jay is a great visionary in technopreneurship!</p>
+		  							</li>
+		  						</ul>
+		  					</dd>
+		  				</dl>
+		  				<dl class="speaker">
+		  					<dt>
+		  						<img src="images/speaker2.jpg">
+		  					</dt>
+		  					<dd>
+		  						<ul>
+		  							<li>
+		  								<a href="#">Yang Mansheng</a>
+		  							</li>
+		  							<li>
+		  								<i style="font-size:90%">CTO, SplinkIt</i>
+		  							</li>
+		  							<li>
+		  								<p style="font-size:90%">Mansheng is extrordinarily talented in IT.</p>
+		  							</li>
+		  						</ul>
+		  					</dd>
+		  				</dl>
+		  				<dl class="speaker">
+		  					<dt>
+		  						<img src="images/speaker3.jpg">
+		  					</dt>
+		  					<dd>
+		  						<ul>
+		  							<li>
+		  								<a href="#">Han Yu</a>
+		  							</li>
+		  							<li>
+		  								<i style="font-size:90%">COO, SplinkIt</i>
+		  							</li>
+		  							<li>
+		  								<p style="font-size:90%">Han Yu is a very gifted operational manager.</p>
+		  							</li>
+		  						</ul>
+		  					</dd>
+		  				</dl>
+			  		</div>
+					<p style="font-weight: bold">10th October 2012</p>
+					<div class="row">
+						<div class="twelve columns">
+							<table class="program">
+								<tbody>
+									<tr>
+										<td width="20%">
+											<p><span class="icon small" data-icon="t"></span>09:00am</p>
+										</td>
+										<td width="80%">
+											<p style="font-weight: bold">Registration</p>
+										</td>
+									</tr>
+									<tr>
+										<td width="20%">
+											<p><span class="icon small" data-icon="t"></span>10:00am</p>
+										</td>
+										<td width="80%">
+											<p style="font-weight: bold">Talk 1 - How to raise Venture Funding</p>
+											<p style="font-size:x-small">Mr Jay Teo Jun Kai</p>
+										</td>
+									</tr>
+									<tr>
+										<td width="20%">
+											<p><span class="icon small" data-icon="t"></span>12:00pm</p>
+										</td>
+										<td width="80%">
+											<p style="font-weight: bold">Talk 2 - How to raise Venture Funding</p>
+											<p style="font-size: x-small">Mr Jay Teo Jun Kai</p>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>		
+					</div>
+					<p style="font-weight: bold">11th October 2012</p>
+					<div class="row">
+						<div class="twelve columns">
+							<table class="program">
+								<tbody>
+									<tr>
+										<td width="20%">
+											<p><span class="icon small" data-icon="t"></span>09:00am</p>
+										</td>
+										<td width="80%">
+											<p style="font-weight: bold">Registration</p>
+										</td>
+									</tr>
+									<tr>
+										<td width="20%">
+											<p><span class="icon small" data-icon="t"></span>10:00am</p>
+										</td>
+										<td width="80%">
+											<p style="font-weight: bold">Talk 1 - How to raise Venture Funding</p>
+											<p style="font-size:x-small">Mr Jay Teo Jun Kai</p>
+										</td>
+									</tr>
+									<tr>
+										<td width="20%">
+											<p><span class="icon small" data-icon="t"></span>12:00pm</p>
+										</td>
+										<td width="80%">
+											<p style="font-weight: bold">Talk 2 - How to raise Venture Funding</p>
+											<p style="font-size: x-small">Mr Jay Teo Jun Kai</p>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>		
+					</div>
+					<p style="font-weight: bold">12th October 2012</p>
+					<div class="row">
+						<div class="twelve columns">
+							<table class="program">
+								<tbody>
+									<tr>
+										<td width="20%">
+											<p><span class="icon small" data-icon="t"></span>09:00am</p>
+										</td>
+										<td width="80%">
+											<p style="font-weight: bold">Registration</p>
+										</td>
+									</tr>
+									<tr>
+										<td width="20%">
+											<p><span class="icon small" data-icon="t"></span>10:00am</p>
+										</td>
+										<td width="80%">
+											<p style="font-weight: bold">Talk 1 - How to raise Venture Funding</p>
+											<p style="font-size:x-small">Mr Jay Teo Jun Kai</p>
+										</td>
+									</tr>
+									<tr>
+										<td width="20%">
+											<p><span class="icon small" data-icon="t"></span>12:00pm</p>
+										</td>
+										<td width="80%">
+											<p style="font-weight: bold">Talk 2 - How to raise Venture Funding</p>
+											<p style="font-size: x-small">Mr Jay Teo Jun Kai</p>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>		
+					</div>
+			  	</li>
+			  	<li id="sponsorTab">
+			  		under construction...
+			  	</li>
+			</ul>
+		</div>
+		<div class="four columns">
+			<div>
+				<button class="clickable register" href="#" id="register_now"><span class="icon medium" data-icon="7"></span> Register Now</button>
+			</div>
+			
+			<div style="margin-top:20px" align="center">
+				<span class="icon social x-large" data-icon="F"></span>
+				<span class="icon social x-large" data-icon="E"></span>
+				<span class="icon social x-large" data-icon="G"></span>
+				<span class="icon social x-large" data-icon="I"></span>
+			</div>
+			<div id="sponsors" style="margin-top:12px; border:1px solid #EFEFEF; padding:10px">
+				<strong style="color:grey">Sponsored by:</strong>
+				<img src="images/sp1.png" width="80%" style="margin-bottom:12px; margin-left:10%">
+				<img src="images/sp2.png" width="80%" style="margin-bottom:12px; margin-left:10%">
+				<img src="images/sp3.png" width="80%" style="margin-bottom:12px; margin-left:10%">
+				<img src="images/sp4.jpg" width="80%" style="margin-bottom:12px; margin-left:10%">
+				<img src="images/sp5.jpg" width="80%" style="margin-bottom:12px; margin-left:10%">
+			</div>
+		</div>
+	</div>
+	
+<!-- ===================================== START FOOTER ===================================== -->	
+
+	
+	<script type="text/javascript" src="js/modernizr.foundation.js"></script>
+	<script type="text/javascript" src="js/foundation.min.js"></script>
+	<script type="text/javascript" src="js/app.js"></script>
+	<script type="text/javascript" src="js/jquery.foundation.tabs.js"></script>
+	<script type="text/javascript" src="js/jquery.foundation.topbar.js"></script>
+	<script type="text/javascript" src="js/foundation.js"></script>
+	<script type="text/javascript" src="js/event_page.js"></script>		
+	<script type="text/javascript" src="js/api.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/foundation.css">
+	<link rel="stylesheet" type="text/css" href="css/style.css" media="all" />     
+</body>
+</html>
+<div id="event_title_form" class="reveal-modal [expand, xlarge, large, medium, small]">
+		<h3>Edit Event Title</h3>
+		<div class="row">
+			<div class="two columns">
+				<label class="right inline">Event title:</label>
+			</div>
+			<div class="ten columns">
+				<input id="event_title" type="text" placeholder="e.g. Title" class="three" /> 
+			</div>
+			<a href="#" class="tiny button title save reveal-close">Save</a>
+			<a href="#" class="tiny button title cencil reveal-close">Cencil</a>
+		</div>
+</div>
+<div id="event_subtitle_form" class="reveal-modal [expand, xlarge, large, medium, small]">
+	  <h3>Edit Event Subtitle</h3>
+	  <div class="row">
+			<div class="two columns">
+				<label class="right inline">Event Start Date:</label>
+			</div>
+			<div class="ten columns">
+				<input id="event_date" type="date" class="three" /> 
+			</div>
+			<div class="two columns">
+				<label class="right inline">Event Location:</label>
+			</div>
+			<div class="ten columns">
+				<input id="event_location1" type="text" placeholder="e.g. Location" class="three" /> 
+			</div>
+			<a href="#" class="tiny button title save reveal-close">Save</a>
+			<a href="#" class="tiny button title cencil reveal-close">Cencil</a>
+		</div>
+</div>
+<div id="event_description_form" class="reveal-modal [expand, xlarge, large, medium, small]">
+ 	<h3>Edit Event Description</h3>
+	<div class="row">
+		<div class="two columns">
+			<label class="right inline">Event description:</label>
+		</div>
+		<div class="ten columns">
+			<textarea id="event_description" style="white-space:pre;resize: none;" cols="80" rows="15" placeholder="e.g. Description" class="three"></textarea> 
+		</div>
+		<a href="#" class="tiny button title save reveal-close">Save</a>
+		<a href="#" class="tiny button title cencil reveal-close">Cencil</a>
+	</div>
+</div>	

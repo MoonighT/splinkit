@@ -1,0 +1,139 @@
+<div class="row" style="margin-bottom: 10px">
+  <div class="banner" id="banner-image" style="background-image: url('<%= event.banner_url %>')">
+    <img style="display: none" src="<%= event.banner_url %>">
+    <div class="edit-wrapper banner">
+      <div class="inner-wrapper banner">
+        <div id="title_container">
+          <div class="edit-wrapper title">
+            <h1><%= event.name %></h1>
+          </div>
+        </div>
+        <div id="subtitle_container">
+          <div class="edit-wrapper subtitle">
+            <p>
+              <%= event.start_date.strftime("%d %b %Y %H:%M") %>
+              --
+              <%= event.end_date.strftime("%d %b %Y %H:%M") %>
+            </p>
+            <p>
+              <%= event.venue + ", " unless event.venue.blank? %>
+              <span id="event_address"><%= event.location %></span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="eight columns leftmost">
+    <dl class="tabs <%= event.event_tabs.any? ? "six" : "three" %>-up">
+      <dd class="active"><a href="#home">Home</a></dd>
+      <% if event.programs.any? || event.speakers.any? %>
+        <dd><a href="#program">Program</a></dd>
+      <% end %>
+      <% index = 0 %>
+      <% event.event_tabs.each do |tab| %>
+        <% index += 1 %>
+        <dd><a href="#tab<%= index %>"><%= tab.title %></a></dd>
+      <% end %>
+    </dl>
+
+    <ul class="tabs-content">
+      <!-- showing basic information of the event -->
+        <li class="active" id="homeTab">
+          <div id="description_container">
+            <h4>What it is about</h4>
+            <% if @event.poster.file? %>
+              <div class="poster-wrapper">
+                <a href="<%= @event.poster.url %>" target="_blank">
+                  <img id="poster-image" src="<%= @event.poster_url %>">
+                </a>
+              </div>
+            <% end %>
+            <div class="event-description">
+              <p style="white-space:pre-wrap"><%= sanitize event.description %></p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="six columns">
+              <h4>Brought to you by</h4>
+              <div class="organizer">
+                <h5><%= event.organizer %></h5>
+                <p><%= event.organizer_desc %></p>
+              </div>
+            </div>
+            <div class="six columns">
+              <h4>Location <a id='get-there' class="in-btn get-direction" target="_blank">Get there</a></h4>
+              <div id="map" style="height:180px"></div>
+              <p>
+                <%= event.venue + ", " unless event.venue.blank? %>
+                <span  id="event_location"><%= event.location %></span>
+              </p>
+            </div>
+          </div>
+        </li>
+        <% if event.speakers.any? || event.programs.any? %>
+          <!-- showing the detailed programs of the event -->
+          <li id="programTab">
+            <% if event.speakers.any? %>
+              <h4>Guest of Honor:</h4>
+              <div class="row">
+                <%= render(event.speakers) %>
+              </div>
+            <% end %>
+            <% if event.programs.any? %>
+              <h4>Programs:</h4>
+            <% end %>
+            <div class="program">
+            <%= render(event.programs, event: event) %>
+            </div>
+          </li>
+        <% end %>
+        <% index = 0 %>
+        <% event.event_tabs.each do |tab| %>
+          <% index += 1 %>
+          <li id="tab<%= index %>Tab">
+            <%=sanitize tab.content %>
+          </li>
+        <% end %>
+    </ul>
+    <div class="row">
+      <fb:comments href="<%= event_url(event.id) %>" num_posts="50" width="650"></fb:comments>
+    </div>
+  </div>
+  <div class="four columns rightmost">
+    <div class="summary">
+      <p><b><%= event.name %></b></p> 
+      <p><%= event.end_date.strftime("%d %b %Y %H:%M") %></p> 
+      <p>
+        <%= event.venue + ", " unless event.venue.blank? %>
+        <%= event.location %>
+      </p>
+      <button class="clickable register" href="#" id="register-now">
+        <span class="icon medium" data-icon="7"></span> Register Now
+      </button>
+      <div style="margin-top:20px" align="center" class="share-btn">
+        <a href="mailto:?Subject=<%=u event.name %>&Body=<%=u event.name %> <%= event_url(event) %>">
+          <img alt="Facebook" src="/assets/email_32.png">
+        </a>
+        <a rel="nofollow" target="_blank" title="Share on Facebook"
+          href="http://www.facebook.com/share.php?u=<%= event_url(event) %>">
+          <img alt="Facebook" src="/assets/facebook_32.png">
+        </a>
+        <a title="Share on Twitter" target="_blank" 
+          href="http://twitter.com/home?status=I'm attending <%= event.name %> <%= event_url(event) %>">
+          <img alt="Twitter" src="/assets/twitter_32.png">
+        </a>
+        <a title="Share on LinkedIn" target="_blank"
+          href="http://www.linkedin.com/shareArticle?mini=true&amp;url=<%= event_url(event) %>&amp;title=<%=u event.name %>">
+          <img alt="Linkedin" src="/assets/linkedin_32.png">
+        </a>
+      </div>
+    </div>
+    <div id="going" class="sidebar">
+      <%= render(partial: "events/whos_going", object: event.registrations) %>
+    </div>
+  </div>
+</div>
+<%= render(partial: "registrations/register_modal", locals: { event: event }) %>

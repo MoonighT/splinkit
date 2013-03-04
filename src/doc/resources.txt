@@ -1,0 +1,28 @@
+event
+/events.json
+GET /events/{id}.json?details=all
+    name
+    start_date
+    end_date
+    description
+    location
+    banner_url: /events/{id}/banner.json
+
+    speakers
+    /events/{id}/speakers.json
+        name
+        position
+        description
+        photo_url: /speakers/{id}/photo.json
+
+    programs
+    /events/{id}/programs
+        name
+        activities
+        /events/{id}/programs/{id}/activities/{id}.json
+            time
+            topic
+
+    photos
+    /events/{id}/photos
+        content_url: POST /events/{id}/photos.json

@@ -1,0 +1,81 @@
+<%= form_for(@event, html: { multipart: true }) do |f| %>
+  <% if @event.errors.any? %>
+    <div id="error_explanation" class="error twelve">
+      <div class="one columns">
+        <h1>:(</h1>
+      </div>
+      <div class="eleven">
+        <h4>Oops...Event cannot be created...</h4>
+        <h4>
+        <% @event.errors.full_messages.each do |msg| %>
+          <span><%= msg %></span>
+        <% end %>
+        </h4>
+      </div>
+    </div>
+  <% end %>
+
+  <p class="tweleve tip-bar">
+    Want a quick sign up page? Fill in the Event details and see how it looks!
+    <%= f.submit 'Next', :class => 'clickable'%>
+  </p>
+  <div class="row">
+    <div class="seven columns">
+      <form>
+        <div class="row">
+          <div class="three columns">
+            <label class="right inline">Event name:</label>
+          </div>
+          <div class="nine columns">
+            <%= f.text_field :name, :placeholder=>"e.g. Joe's Rock Concert" %>
+          </div>
+        </div>
+        <div class="row">
+          <div class="three columns">
+            <label class="right inline">Starting time:</label>
+          </div>
+          <div class="nine columns">
+            <%= f.text_field :start_date, class: "start-datetime-picker", 
+              value: format_datetime(@event.start_date)%>
+          </div>
+        </div>
+        <div class="row">
+          <div class="three columns">
+            <label class="right inline">Ending time:</label>
+          </div>
+          <div class="nine columns">
+            <%= f.text_field :end_date, class: "end-datetime-picker", 
+              value: format_datetime(@event.end_date)%>
+          </div>
+        </div>
+        <div class="row">
+          <div class="three columns">
+            <label class="right inline">Description:</label>
+          </div>
+          <div class="nine columns">
+            <%= f.text_area :description, :size=>'20x3', :placeholder=>'What is this event about?', :resize=>'none' %>
+          </div>
+        </div>
+        <div class="row">
+          <div class="three columns">
+            <label class="right inline">Address:</label>
+          </div>
+          <div class="nine columns">
+            <%= f.text_field :location, :placeholder=>'Where is this awesomeness?' %>
+          </div>
+        </div>
+        <div class="row">
+          <div class="three columns">
+            <label class="right inline">Venue:</label>
+          </div>
+          <div class="nine columns">
+            <%= f.text_field :venue %>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="five columns">
+      <div id="map" class="tweleve" style="height:290px"></div>
+    </div>
+  </div>
+<% end %>

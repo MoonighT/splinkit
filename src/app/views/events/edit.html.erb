@@ -1,0 +1,671 @@
+<% content_for :title do %>
+  <%= "Edit " + @event.name + " - Splinkit" %>
+<% end %>
+
+<script type="text/javascript" >
+  event_json = '<%= raw escape_javascript(@event.to_json(details: "all")) %>';
+</script>
+  <!-- ===================================== START TEMPLATE ===================================== -->
+<script type="text/template" id="organizer_template">
+  <div class="edit-wrapper organizer">
+    <h5>{{= organizer }}</h5>
+    <p>{{= organizer_desc }}</p>
+    <span class="mask">
+      <button class="edit-btn" id="edit-organizer" data-reveal-id="event_organizer_form">Edit</button>       
+    </span>
+  </div> 
+</script>
+<script type="text/template" id="title_template">
+  <div class="edit-wrapper title">
+    <h1>{{= title }}</h1>
+    <span class="mask">
+      <button class="edit-btn" id="edit-title" data-reveal-id="event_title_form">Edit</button>        
+    </span>
+  </div>  
+</script>
+<script type="text/template" id="subtitle_template">
+  <div class="edit-wrapper subtitle">
+    <p>{{= start_date }} -- {{= end_date }}</p>
+    <p>{{ if (venue) { }} {{= venue }}, {{ } }}<span id="event_address">{{= location }}</span></p>
+    <span class="mask">
+      <button class="edit-btn" id="edit-subtitle">Edit</button>  
+    </span>
+  </div>
+</script>
+<script type="text/template" id="description_template">
+  <div class="edit-wrapper event-description">
+    <p style="white-space:pre-wrap">{{= description }}</p>
+    <span class="mask">
+      <button class="edit-btn" id="edit-description">Edit</button>       
+    </span>
+  </div>
+</script>
+<script type="text/template" id="speaker_template">
+<dl class="speaker">
+  <div class="edit-wrapper speaker">
+    <dt>
+      <img src="{{= photo_url }}">
+    </dt>
+    <dd>
+      <ul>
+        <li>
+          <a href="#">{{= name }}</a>
+        </li>
+        <li>
+          <i style="font-size:90%">{{= position }}</i>
+        </li>
+        <li>
+          <p style="font-size:90%">{{= description }}</p>
+        </li>
+      </ul>
+      <span class="mask" style="width:180px; left:120px">
+       <button class="edit-btn" id="edit-speaker" name={{= id }} >Edit</button>  
+       <button class="del-btn" id="remove_speaker" name={{= id }}>Remove</button>      
+      </span>
+      <span class="mask" style="width:120px">
+        <div class="edit-btn upload" data-action="/speakers/{{= id }}/photo.json">Change</div> 
+      </span>
+    </dd>
+  </div>
+</dl>
+</script>
+
+<script type="text/template" id="add_speaker_template">
+<dl class="speaker">
+	<dt>
+		<div style="width:100%; height:100%; background: #dddddd">
+    </div>
+	</dt>
+	<dd>
+		<ul>
+			<li>
+				<a id="add_speaker" style="cursor:pointer; font-size:24px; text-align: center; vertical-align: middle" name={{= add_id }}> {{= add_speaker}} </a>
+			</li>
+		</ul>
+	</dd>
+</dl>
+</script>
+
+<script type="text/template" id="program_template">
+<div class="program">
+  <div class="edit-wrapper program">
+    <div class="twelve">
+      <h5>{{= program_name }}</h5>
+    </div>
+    <span class="mask">
+        <!--<button class="edit-btn" id="edit-program">Edit</button>  -->
+        <button class="del-btn" id="remove-program" name={{= program_id }} >Remove</button>        
+    </span>
+  </div>
+  <div class="row">
+    <div class="twelve">
+       <div id="activity_container"></div>
+    </div>    
+  </div>
+</div>
+
+</script>
+
+<script type="text/template" id="add_program_template">
+<div class="program">
+  <div class="twelve">
+    <a id="add-program" style="cursor:pointer" name={{= event_id }}> New Program </a>
+  </div>    
+</div>
+</script>
+
+<script type="text/template" id="activity_template">
+  <div class="edit-wrapper activity eleven columns offset-by-one">
+    <div class="three columns">
+      <p><span class="icon small" data-icon="t"></span>{{= activity_time }}</p>
+    </div>
+    <div class="nine columns">
+      <p>{{= activity_topic }}</p>
+    </div>
+    <span class="mask">
+       
+      <button class="del-btn" id="remove-activity" name={{= activity_id }} >Remove</button>    
+    </span>
+  </div>
+</script>
+
+<script type="text/template" id="add_activity_template">
+  <div class="edit-wrapper activity eleven columns offset-by-one">
+    <div class="three columns">
+      <p><span class="icon small" data-icon="t"></span><a id="add-activity" style="cursor: pointer" name={{= prog_id }}> New Activity</a></p>
+    </div>
+  </div>
+</script>
+
+<script type="text/template" id="registration_template">
+  <div class="edit-wrapper activity twelve columns">
+    <div class="twelve columns">
+      <p>{{= event_registration_type }}</p>
+    </div>
+    <span class="mask">
+       <button style="margin-top:10px" class="del-btn" id="remove-registraiton" name={{= registration_type_id }} >Remove</button>
+    </span>
+  </div>
+</script>
+
+<script type="text/template" id="add_registration_template">
+  <div class="ten columns offset-by-two">
+    <input id="registration_type" type="text" class="twelve" placeholder="New ticket type (e.g. premium)">
+    <small id="add_registration_error" class="twelve error"></small>
+  </div>
+  <div class="two columns">
+    <div class="reveal-btns"> 
+     <a id="add-registration-type" class="button title add" style="margin-top:2px">Add</a>
+    </div>
+  </div>
+</script>
+
+<% content_for :js do %>
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=places&sensor=false"></script>
+<script type="text/javascript">
+  // google map autocomplete
+  var input = document.getElementById('basic_event_location');
+  var input2 = document.getElementById('event_location1');
+  var options = {
+    types: ['geocode']
+  };
+
+  autocomplete_one = new google.maps.places.Autocomplete(input, options);
+  autocomplete_two = new google.maps.places.Autocomplete(input2, options);
+
+  google.maps.event.addListener(autocomplete_one, 'place_changed', function() {
+    var place = autocomplete_one.getPlace();
+
+    if (!place.geometry) {
+      // Inform the user that a place was not found and return.
+      return;
+    }
+
+    // If the place has a geometry, then present it on a map.
+    if (place.geometry.viewport) {
+      // Use the viewport if it is provided.
+      map.fitBounds(place.geometry.viewport);
+    } else {
+      // Otherwise use the location and set a chosen zoom level.
+      map.setCenter(place.geometry.location);
+      map.setZoom(15);
+
+      var marker = new google.maps.Marker({
+        position: place.geometry.location,
+        map:map,
+        title: place.formatted_address,
+        animation: google.maps.Animation.DROP
+      });
+
+      for (var i = 0; i < markers.length; i++ ) {
+        markers[i].setMap(null);
+      }
+
+      markers.push(marker);
+      marker.setMap(map);
+    }     
+  });
+
+  google.maps.event.addListener(autocomplete_two, 'place_changed', function() {
+    var place = autocomplete_two.getPlace();
+
+    if (!place.geometry) {
+      // Inform the user that a place was not found and return.
+      return;
+    }
+
+    // If the place has a geometry, then present it on a map.
+    if (place.geometry.viewport) {
+      // Use the viewport if it is provided.
+      map.fitBounds(place.geometry.viewport);
+    } else {
+      // Otherwise use the location and set a chosen zoom level.
+      map.setCenter(place.geometry.location);
+      map.setZoom(15);
+
+      var marker = new google.maps.Marker({
+        position: place.geometry.location,
+        map:map,
+        title: place.formatted_address,
+        animation: google.maps.Animation.DROP
+      });
+
+      for (var i = 0; i < markers.length; i++ ) {
+        markers[i].setMap(null);
+      }
+
+      markers.push(marker);
+      marker.setMap(map);
+    }     
+  });
+
+  var place = document.getElementById('event_address').innerHTML;
+  var address;
+
+  geocoder = new google.maps.Geocoder();
+
+  geocoder.geocode({'address': place}, function(results, status) {
+    if (status == google.maps.GeocoderStatus.OK) {
+      address = results[0];
+
+      map.setCenter(address.geometry.location);
+      map.setZoom(15);
+
+      var marker = new google.maps.Marker({
+          map: map, 
+          position: address.geometry.location,
+          title: address.name,
+          animation: google.maps.Animation.DROP
+      });
+    }
+  });
+
+
+  // initialize the map
+  map = new google.maps.Map(document.getElementById('map'), {
+    mapTypeId: google.maps.MapTypeId.ROADMAP,
+    center: address,
+    zoom: 10,
+    draggable: true,
+    zoomControl: true,
+    streetViewControl: false,
+    mapTypeControl: false,
+    rotateControl: false,
+    scrollwheel: true,
+    disableDoubleClickZoom: false,
+  });
+
+</script>
+<% end %>
+
+<!-- ===================================== END TEMPLATE ===================================== -->
+
+<div class="row" style="margin-bottom: 10px">
+<h1>Editing event</h1>
+<p class="twelve tip-bar">
+  We are almost there! Add more awesomeness!
+  <a id="basic_event_edit" href="#" data-reveal-id="basic_editing"><u>Back to basic editing</u></a>
+  <%= link_to "Launch Now", @event, :class=>'in-btn' %>
+</p>
+<div class="banner" id="banner-image" style="background-image: url('<%= @event.banner_url %>')">
+  <div class="edit-wrapper banner">
+    <div class="inner-wrapper banner">
+      <div id="title_container"></div>
+      <div id="subtitle_container"></div>
+    </div>
+    <span class="mask" style="z-index:1">
+      <div class="edit-btn" id="edit-banner" data-action="/events/<%= @event.id %>/banner.json">Edit</div>
+    </span>
+  </div>
+</div>
+</div>
+<div class="row">
+<div class="eight columns leftmost">
+  <dl class="tabs three-up">
+    <dd class="active"><a href="#home">Home</a></dd>
+    <dd><a href="#program">Program</a></dd>
+  </dl>
+
+  <ul class="tabs-content">
+    <!-- showing basic information of the event -->
+      <li class="active" id="homeTab">
+        <h4>What it is about</h4>
+        <div class="edit-wrapper event-poster">
+          <div class="poster-wrapper">
+            <img id="poster-image" src="<%= @event.poster_url %>">
+          </div>
+          <span class="mask" style="z-index:1">
+            <div class="edit-btn" id="edit-poster" data-action="/events/<%= @event.id %>/poster.json">
+              Upload
+            </div>
+            <button class="del-btn" id="delete-poster" data-action="/events/<%= @event.id %>/poster.json">
+              Remove
+            </button>
+          </span>
+        </div>
+        <div id="description_container">
+        </div>
+      <div class="row">
+        <div class="six columns">
+          <h4>Brought to you by</h4>
+          <div id="organizer_container">
+          </div>
+        </div>
+        <div class="six columns">
+          <h4>Location and time</h4>
+          <div id="map" style="height:180px">
+          </div>
+        </div>
+      </div>  
+      </li>
+      <!-- showing the detailed programs of the event -->
+      <li id="programTab">
+        <h4>Guest of Honor:</h4>
+        <div class="row" id="speaker_container">
+        </div>
+        <h4>Programs:</h4>
+        <div id="program_container">
+        </div>
+      </li>
+  </ul>
+</div>
+<div class="four columns rightmost">
+  <div class="summary">
+    <div id="summary">
+      <!-- to be filled up with event summary -->
+    </div>
+    <div class="twelve registration">
+      <button class="clickable register" href="#" id="register_now">Register Now</button>
+      <span class="mask">
+        <button class="edit-btn" id="edit-registration">Edit</button>       
+      </span>
+    </div>
+  </div>
+
+  <div style="margin-top:20px" align="center">
+    <span class="icon social x-large" data-icon="F"></span>
+    <span class="icon social x-large" data-icon="E"></span>
+    <span class="icon social x-large" data-icon="G"></span>
+    <span class="icon social x-large" data-icon="I"></span>
+  </div>
+  <div id="sponsors" class="sidebar">
+    <h4>Who's going</h4>
+    <ul class="going">
+    <li>
+      <img src="">
+      <p>Attendee one</p>
+    </li>
+    <li>
+      <img src="">
+      <p>Attendee two</p>
+    </li>
+    <li>
+      <img src="">
+      <p>Attendee three</p>
+    </li>
+    <li>
+      ......
+    </li>
+  </ul>
+  </div>
+</div>
+</div>
+<div id="event_title_form" class="reveal-modal [expand, xlarge, large, medium, small]">
+  <h3>Edit Event Title</h3>
+  <div class="four columns">
+    <label class="right inline" for="event_title">Event title:</label>
+  </div>
+  <div class="eight columns">
+    <input id="event_title" type="text" maxlength="40"class="three" />
+    <small id="title_error" class="three error"></small>
+  </div>
+  <div class="twelve columns reveal-btns">
+    <a class="button title cancel reveal-close">Cancel</a>
+    <a class="button title save reveal-close">Save</a>
+  </div>
+</div>
+<div id="event_subtitle_form" class="reveal-modal [expand, xlarge, large, medium, small]">
+  <h3>Edit Event Subtitle</h3>
+  <div class="four columns">
+    <label class="right inline" for="event_date">Event Start Time:</label>
+  </div>
+  <div class="eight columns">
+    <input id="event_date" class="start-datetime-picker" type="text" class="three" />
+  </div>
+  <div class="four columns">
+    <label class="right inline" for="end_event_date">Event End Time:</label>
+  </div>
+  <div class="eight columns">
+    <input id="end_event_date" class="end-datetime-picker" type="text" class="three" />
+  </div>
+  <div class="four columns">
+    <label class="right inline" for="event_location1">Event Location:</label>
+  </div>
+  <div class="eight columns">
+    <input id="event_location1" type="text" class="three">
+  </div>
+  <div class="four columns">
+    <label class="right inline" for="event_venue1">Event Venue:</label>
+  </div>
+  <div class="eight columns">
+    <input id="event_venue1" type="text" class="three">
+  </div>
+  <div class="twelve columns reveal-btns">
+    <a class="button title cancel reveal-close">Cancel</a>
+    <a class="button title save reveal-close">Save</a>
+  </div>
+</div>
+<div id="event_description_form" class="reveal-modal [expand, xlarge, large, medium, small]">
+  <h3>Edit Event Description</h3>
+  <div class="four columns">
+    <label class="right inline" for="event_description">Event description:</label>
+  </div>
+  <div class="eight columns">
+    <textarea id="event_description" style=" resize: none; width:100%" cols="80" rows="6" class="three">
+    </textarea>
+    <small id="description_error" class="three error"></small>
+  </div>
+  <div class="twelve columns reveal-btns">
+    <a class="button title cancel reveal-close">Cancel</a>
+    <a class="button title save reveal-close">Save</a>
+  </div>
+</div>
+<div id="event_speaker_form" class="reveal-modal [expand, xlarge, large, medium, small]">
+  <h3>Create Event Speaker</h3>
+  <div class="four columns">
+    <label class="right inline" for="speaker_name">Speaker name:</label>
+  </div>
+  <div class="eight columns">
+      <input id="speaker_name" type="text" maxlength="20" class="three">
+      <small id="create_speaker_name_error" class="twelve error"></small>
+  </div>
+
+  <div class="four columns">
+    <label class="right inline" for="speaker_position">Speaker position:</label>
+  </div>
+  <div class="eight columns">
+      <input id="speaker_position" type="text" maxlength="20" class="three">
+  </div>
+  <div class="four columns">
+    <label class="right inline" for="speaker_description">Speaker detail:</label>
+  </div>
+  <div class="eight columns">
+    <input id="speaker_description" type="text" maxlength="20" class="three">
+  </div>
+  <div class="twelve columns reveal-btns">
+    <a class="button title cancel reveal-close">Cancel</a>
+    <a class="button title add" id="add_speaker">Add</a>
+  </div>
+</div>
+<div id="edit_event_speaker_form" class="reveal-modal [expand, xlarge, large, medium, small]">
+  <h3>Edit Event Speaker</h3>
+  <div class="four columns">
+    <label class="right inline" for="edit_speaker_name">Speaker name:</label>
+  </div>
+  <a id="speaker_id" hidden></a>
+  <div class="eight columns">
+      <input id="edit_speaker_name" type="text" maxlength="20" class="three">
+      <small id="edit_speaker_name_error" class="twelve error"></small>
+  </div>
+  <div class="four columns">
+    <label class="right inline" for="edit_speaker_position">Speaker position:</label>
+  </div>
+  <div class="eight columns">
+      <input id="edit_speaker_position" type="text" maxlength="20" class="three">
+  </div>
+  <div class="four columns">
+    <label class="right inline" for="edit_speaker_description">Speaker detail:</label>
+  </div>
+  <div class="eight columns">
+    <input id="edit_speaker_description" type="text" maxlength="20" class="three" >
+  </div>
+  <div class="twelve columns reveal-btns">
+    <a class="button title cancel reveal-close">Cancel</a>
+    <a class="button title save " id="edit_speaker">Save</a>
+  </div>
+</div>
+<div id="event_activity_form" class="reveal-modal [expand, xlarge, large, medium, small]">
+  <h3>Create Event Activity</h3>
+  <a id="program_id" hidden></a>
+  <div class="four columns">
+    <label class="right inline" for="activity_time">Time:</label>
+  </div>
+  <div class="eight columns">
+    <input id="activity_time" type="text" class="three">
+  </div>
+
+  <div class="four columns">
+    <label class="right inline" for="activity_description">Description:</label>
+  </div>
+  <div class="eight columns">
+    <input id="activity_description" type="text" class="three">
+    <small id="create_activity_error" class="twelve error"></small>
+  </div>
+  <div class="twelve columns reveal-btns">
+    <a class="button title cancel reveal-close">Cancel</a>
+    <a class="button title add" id="create_activity">Add</a>
+  </div>
+</div>
+<div id="edit_event_activity_form" class="reveal-modal [expand, xlarge, large, medium, small]">
+  <h3>Edit Event Activity</h3>
+  <div class="four columns">
+    <label class="right inline" for="edit_activity_time">Time:</label>
+  </div>
+  <div class="eight columns">
+    <input id="edit_activity_time" type="text" class="three">
+  </div>
+  <div class="four columns">
+    <label class="right inline" for="edit_activity_description">Description:</label>
+  </div>
+  <div class="eight columns">
+    <input id="edit_activity_description" type="text" class="three">
+    <small id="edit_activity_error" class="three error"></small>
+  </div>
+  <div class="twelve columns reveal-btns">
+    <a class="button title cancel reveal-close">Cancel</a>
+    <a class="button title save" id="edit_activity">Save</a>
+  </div>
+</div>
+<div id="add_program_form" class="reveal-modal [expand, xlarge, large, medium, small]">
+  <h3>Create Program</h3>
+  <div class="four columns">
+    <label class="right inline" for="program_title">Program title:</label>
+  </div>
+  <div class="eight columns">
+    <input id="program_title" type="text" class="three">
+    <small id="create_program_error" class="three error"></small>
+  </div>
+  <div class="twelve columns reveal-btns">
+    <a class="button title cancel reveal-close">Cancel</a>
+    <a class="button title add" id="create_program">Add</a>
+  </div>
+</div>
+<div id="edit_program_form" class="reveal-modal [expand, xlarge, large, medium, small]">
+  <h3>Edit Program</h3>
+  <div class="four columns">
+    <label class="right inline" for="program_title">Program title:</label>
+  </div>
+  <div class="eight columns">
+    <input id="program_title" type="text" class="three">
+    <small id="create_program_error" class="three error"></small>
+  </div>
+  <div class="twelve columns reveal-btns">
+    <a class="button title cancel reveal-close">Cancel</a>
+    <a class="button title save" id="edit_program">Save</a>
+  </div>
+</div>
+<div id="basic_editing" class="reveal-modal [expand, xlarge, large, medium, small]">
+  <h3>Event Information</h3>
+  <div class="four columns">
+    <label class="right inline" for="basic_event_name">Event name:</label>
+  </div>
+  <div class="eight columns">
+    <input id="basic_event_name" type="text" name="event-name" maxlength="40">
+    <small id="basic_event_name_error" class="twelve error"></small>
+  </div>
+  <div class="four columns">
+    <label class="right inline" for="basic_event_start_time">Starting time:</label>
+  </div>
+  <div class="eight columns">
+    <input id="basic_event_start_time" class="start-datetime-picker" type="text" name="starting-date">
+    <small id="basic_event_start_time_error" class="twelve error"></small>
+  </div>
+  <div class="four columns">
+    <label class="right inline" for="basic_event_end_time">Ending time:</label>
+  </div>
+  <div class="eight columns">
+    <input id="basic_event_end_time" class="end-datetime-picker" type="text" name="ending-date" >
+    <small id="basic_event_end_time_error" class="twelve error"></small>
+  </div>
+  <div class="four columns">
+    <label class="right inline" for="basic_event_description">Description:</label>
+  </div>
+  <div class="eight columns">
+    <textarea id="basic_event_description" rows=3 style="resize:none" name="description"></textarea>
+    <small id="basic_event_description_error" class="twelve error"></small>
+  </div>
+  <div class="four columns">
+    <label class="right inline" for="basic_event_location">Location:</label>
+  </div>
+  <div class="eight columns">
+    <input id="basic_event_location" type="text" name="location"/>
+    <small id="basic_event_location_error" class="twelve error"></small>
+  </div>
+  <div class="four columns">
+    <label class="right inline" for="basic_event_venue">Venue:</label>
+  </div>
+  <div class="eight columns">
+    <input id="basic_event_venue" type="text" name="venue"/>
+    <small id="basic_event_venue_error" class="twelve error"></small>
+  </div>
+  <div class="four columns">
+    <label class="right inline" for="basic_event_organizer">Organizer name:</label>
+  </div>
+  <div class="eight columns">
+    <input id="basic_event_organizer" type="text" name="event-name" maxlength="40">
+    <small id="basic_event_organizer_error" class="twelve error"></small>
+  </div>
+  <div class="four columns">
+    <label class="right inline" for="basic_event_organizer_desc">Organizer description:</label>
+  </div>
+  <div class="eight columns">
+    <textarea id="basic_event_organizer_desc" rows=3 style="resize:none" name="description"></textarea>
+    <small id="basic_event_organizer_desc_error" class="twelve error"></small>
+  </div>
+  <div class="twelve columns reveal-btns">
+    <a class="button title cancel reveal-close">Cancel</a>
+    <a id="basic_event_edit_save" class="button title add">Save</a>
+  </div>
+</div>
+<div id="event_organizer_form" class="reveal-modal [expand, xlarge, large, medium, small]">
+  <h3>Edit Event Organizer</h3>
+  <div class="four columns">
+    <label class="right inline" for="organizer_name">Organizer name:</label>
+  </div>
+  <div class="eight columns">
+    <input id="organizer_name" type="text" maxlength="40"class="three" />
+    <small id="organizer_error" class="twelve error"></small>
+  </div>
+  <div class="four columns">
+    <label class="right inline" for="organizer_description">Organizer detail:</label>
+  </div>
+  <div class="eight columns">
+    <textarea id="organizer_description" style=" resize: none; width:100%" cols="80" rows="6" class="three">
+    </textarea>
+    <small id="organizer_desc_error" class="twelve error"></small>
+  </div>
+  <div class="twelve columns reveal-btns">
+    <a class="button title cancel reveal-close">Cancel</a>
+    <a id="edit_organizer" class="button title save">Save</a>
+  </div>
+</div>
+<div id="event_registration_form" class="reveal-modal [expand, xlarge, large, medium, small]">
+  <h3>Edit Ticket Type</h3>
+  <div id="ticket_container">
+    <div id="registration_container">
+    </div>
+  </div>
+  <div class="twelve columns reveal-btns">
+    <a class="button title cancel reveal-close">Close</a>
+  </div>
+</div>

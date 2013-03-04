@@ -1,0 +1,24 @@
+<h4>Who's going (<%= whos_going.count %>)</h4>
+<ul class="going">
+  <% whos_going.where("fb_id <> ''").order("created_at DESC").take(10).each do |registration| %>
+    <li>
+      <a href="https://www.facebook.com/<%= registration.fb_id%>" target="_blank">
+      	<img src="http://graph.facebook.com/<%= registration.fb_id %>/picture">
+      	<p><%= "#{registration.first_name} #{registration.last_name}" %></p>
+      </a>
+    </li>
+  <% end %>
+</ul>
+<% content_for :js do %>
+<script type="text/javascript">
+  // auto-resize the title
+  $("ul.going").find('li').each(function(){
+  	while($(this).find('a p').height() > 30) {
+      var current_size = $(this).find('a p').css("font-size");
+      var new_size = parseFloat(current_size, 10) - 2;
+      $(this).find('a p').css("font-size", new_size);
+    }
+  });
+
+</script>
+<% end %>

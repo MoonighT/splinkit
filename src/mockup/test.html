@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Geekcamp SG 2012</title>
+	<meta charset="UTF-8">
+	<meta name="description" content="" />
+	<script type="text/javascript" src="js/jquery-1.8.2.js"></script>
+	<script type="text/javascript" src="jquery-ui-1.9.0.custom/js/jquery-ui-1.9.0.custom.min.js"></script>
+	<script type="text/javascript" src="http://documentcloud.github.com/underscore/underscore-min.js"></script>
+	<script type="text/javascript" src="http://documentcloud.github.com/backbone/backbone-min.js"></script>
+	<script type="text/javascript" src="js/model.js"></script>
+	<script type="text/javascript" src="js/view.js"></script>
+	<!--[if lt IE 9]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script type="text/javascript" src="js/prettify.js"></script>                                   <!-- PRETTIFY -->
+	<script type="text/javascript" src="js/kickstart.js"></script>                                  <!-- KICKSTART -->
+	<link rel="stylesheet" type="text/css" href="css/kickstart.css" media="all" />                  <!-- KICKSTART -->
+	<link rel="stylesheet" type="text/css" href="style.css" media="all" />                          <!-- CUSTOM STYLES -->
+	<link rel="stylesheet" type="text/css" href="jquery-ui-1.9.0.custom/css/smoothness/jquery-ui-1.9.0.custom.min.css" media="all"/>
+</head>
+<body>
+
+
+<!-- ===================================== START TEMPLATE ===================================== -->
+<script type="text/template" id="title_template">
+	<div class="edit-wrapper title">
+		<p><%= title %></p>
+		<span class="mask">
+			<span class="edit-btn" id="edit-title">Edit title</span>				
+		</span>
+	</div>	
+</script>
+<script type="text/template" id="subtitle_template">
+	<div class="edit-wrapper subtitle">
+		<p><%= start_date %><br> <%= location %></p>
+		<span class="mask">
+			<span class="edit-btn" id="edit-subtitle">Edit details</span>				
+		</span>
+	</div>
+</script>
+<script type="text/template" id="description_template">
+	<div class="description edit-wrapper">
+		<p><%= description %></p>
+		<span class="mask">
+			<span class="edit-btn" id="edit-description">Edit Description</span>				
+		</span>
+	</div>
+</script>
+<!-- ===================================== END TEMPLATE ===================================== -->
+
+
+	<a id="top-of-page"></a>
+	<div id="wrap" class="clearfix">
+		<div id="navigation">
+			<a href="#"><span class="icon small" data-icon="f"></span></a>
+			<a href="#">Home</a>
+			<a href="#">Events</a>
+			<a href="#">Organizers</a>
+			<a href="#">Sponsors</a>
+			<input style="width:240px; height:28px; margin-left:100px; border-radius:0px" placeholder="Search for events,sponsor..."></input>
+			<span class="clickable search">Search</span>
+		</div>
+		<div class="banner">
+			<div class="banner inner-wrapper">
+				<div id="title_container"></div>
+				<div id="subtitle_container"></div>
+			</div>
+		</div>
+		<div class="col_8">
+			<!-- Tabs Left -->
+			<ul class="tabs left">
+				<li class="current"><a href="#home">Home</a></li>
+				<li><a href="#program">Program</a></li>
+				<li><a href="#sponsors">Sponsors</a></li>
+			</ul>
+
+			<div id="home" class="tab-content">
+				<!-- Slideshow -->
+				<ul class="slideshow center">
+					<li class="first">
+						<img src="img/show3.jpg"/>
+					</li>
+					<li class="current">
+						<img src="img/show2.jpg"/>
+					</li>
+					<li class="last">
+						<img src="img/show1.jpg"/>
+					</li>
+				</ul>
+
+				<div id="description_container"></div>
+				
+				<div class="col_6">
+					<p style="font-weight:bold">Brought to you by:</p>
+					<img src="img/organizer.png" width="100%">
+					<p style="font-size:120%; font-weight:bold">
+						<span class="icon medium" data-icon="U"></span>
+						<a href="#">Geekcamp</a>
+						<span class="icon small" data-icon="f"></span>
+						<span class="icon small" data-icon="f"></span>
+						<span class="icon small" data-icon="f"></span>
+						<span class="icon small" data-icon="e"></span>
+						<span class="icon small" data-icon="d"></span></p>
+					<p>geeks and nerds trying to make some differences! :D</p>
+					<ul>
+					<li>Jay Teo Jun Kai</li>
+					<li>Han Yu</li>
+					<li>Yang Mansheng</li>
+					<li>Meng Kaizhi</li>
+					</ul>
+				</div>
+				<div class="col_6">
+					<p style="font-weight:bold">Location and time:</p>
+					<iframe class="map-placeholder" width="100%" height="160" src="http://maps.google.com/maps?f=q&t=m&z=5&output=embed"  frameborder="0" style="margin-bottom: 10px"></iframe>
+					<span class="icon medium" data-icon="6"></span>Saturday, 10-12 Oct, 4.30pm-7.30pm <br>
+					<span class="icon medium" data-icon="y"></span>Marina Bay, <a href="#">50 Kent Ridge Crescent, Singapore 119279</a>
+				</div>	
+			</div>
+			<div id="program" class="tab-content" style="display: none">
+				<p style="font-weight: bold">Speakers:</p>
+				<div class="col_12">
+					<div class="col_6" style="background: #EFEFEF; height:120px">
+						<img src="img/speaker1.jpg" width="100px" height="100px" style="float: left; margin-right:10px">
+						<a href="#">Jay Teo Jun Kai</a>
+						<p style="font-size:90%"><i>CEO, Splinkit</i></p>
+						<p style="font-size:80%">Jay is a great visionary in technopreneurship.</p>
+					</div>
+					<div class="col_6" style="background: #EFEFEF; height:120px">
+						<img src="img/speaker2.jpg" width="100px" height="100px" style="float: left; margin-right:10px">
+						<a href="#">Yang Mansheng</a>
+						<p style="font-size:90%"><i>CTO, Splinkit</i></p>
+						<p style="font-size:80%">Mansheng is extrordinarily talented in IT.</p>
+					</div>
+					<div class="col_6" style="background: #EFEFEF; height:120px">
+						<img src="img/speaker3.jpg" width="100px" height="100px" style="float: left; margin-right:10px">
+						<a href="#">Han Yu</a>
+						<p style="font-size:90%"><i>COO, Splinkit</i></p>
+						<p style="font-size:80%">Han Yu is a very gifted operational manager.</p>
+					</div>
+				</div>
+				<p style="font-weight: bold">10th October 2012</p>
+				<div class="col_12">		
+					<table class="tight">
+						<tbody>
+							<tr>
+								<td width="20%">
+									<p><span class="icon small" data-icon="t"></span>09:00am</p>
+								</td>
+								<td width="80%">
+									<p style="font-weight: bold">Registration</p>
+								</td>
+							</tr>
+							<tr>
+								<td width="20%">
+									<p><span class="icon small" data-icon="t"></span>10:00am</p>
+								</td>
+								<td width="80%">
+									<p style="font-weight: bold">Talk 1 - How to raise Venture Funding</p>
+									<p style="font-size:x-small">Mr Jay Teo Jun Kai</p>
+								</td>
+							</tr>
+							<tr>
+								<td width="20%">
+									<p><span class="icon small" data-icon="t"></span>12:00pm</p>
+								</td>
+								<td width="80%">
+									<p style="font-weight: bold">Talk 2 - How to raise Venture Funding</p>
+									<p style="font-size: x-small">Mr Jay Teo Jun Kai</p>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<p style="font-weight: bold">11th October 2012</p>
+				<div class="col_12">		
+					<table class="tight">
+						<tbody>
+							<tr>
+								<td width="20%">
+									<p><span class="icon small" data-icon="t"></span>09:00am</p>
+								</td>
+								<td width="80%">
+									<p style="font-weight: bold">Registration</p>
+								</td>
+							</tr>
+							<tr>
+								<td width="20%">
+									<p><span class="icon small" data-icon="t"></span>10:00am</p>
+								</td>
+								<td width="80%">
+									<p style="font-weight: bold">Talk 1 - How to raise Venture Funding</p>
+									<p style="font-size:x-small">Mr Jay Teo Jun Kai</p>
+								</td>
+							</tr>
+							<tr>
+								<td width="20%">
+									<p><span class="icon small" data-icon="t"></span>12:00pm</p>
+								</td>
+								<td width="80%">
+									<p style="font-weight: bold">Talk 2 - How to raise Venture Funding</p>
+									<p style="font-size: x-small">Mr Jay Teo Jun Kai</p>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<p style="font-weight: bold">12th October 2012</p>
+				<div class="col_12">		
+					<table class="tight">
+						<tbody>
+							<tr>
+								<td width="20%">
+									<p><span class="icon small" data-icon="t"></span>09:00am</p>
+								</td>
+								<td width="80%">
+									<p style="font-weight: bold">Registration</p>
+								</td>
+							</tr>
+							<tr>
+								<td width="20%">
+									<p><span class="icon small" data-icon="t"></span>10:00am</p>
+								</td>
+								<td width="80%">
+									<p style="font-weight: bold">Talk 1 - How to raise Venture Funding</p>
+									<p style="font-size:x-small">Mr Jay Teo Jun Kai</p>
+								</td>
+							</tr>
+							<tr>
+								<td width="20%">
+									<p><span class="icon small" data-icon="t"></span>12:00pm</p>
+								</td>
+								<td width="80%">
+									<p style="font-weight: bold">Talk 2 - How to raise Venture Funding</p>
+									<p style="font-size: x-small">Mr Jay Teo Jun Kai</p>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div id="sponsors" class="tab-content" style="display: none">
+				<p style="font-weight:bold">Gold Sponsor</p>
+				<div class="col_12">
+					<div class="col_4">
+						<a href="https://www.windowsazure.com/en-us/pricing/free-trial/?WT.mc_id=AB39D46DE"><img src="img/sp1.png" width="100%"></a>
+					</div>
+					<div class="col_8">
+						<p>
+							Windows Azure offers you a rock-solid cloud platform for blue-sky thinking! Try it now for free!
+						</p>
+					</div>
+				</div>
+				<div class="col_12">
+					<div class="col_4">
+						<a href="http://www.softlayer.com/cloudcash"><img src="img/sp2.png" width="100%"></a>
+					</div>
+					<div class="col_8">
+						<p>
+							Build on a global cloud infrastructure at Internet scale. With dedicated servers and cloud servers integrated in a seamless, fully-automated platform, SoftLayer lets you blur the lines between physical and virtual and move ideas into reality.
+						</p>
+					</div>
+				</div>
+				<p style="font-weight:bold">Silver Sponsor</p>
+				<div class="col_12">
+					<div class="col_6">
+						<div class="col_6">
+							<img src="img/sp3.png" width="100%">
+						</div>
+						<div class="col_6">
+							<p>
+								Enjoy a faster, safer way to pay - anytime, anywhere.
+							</p>
+						</div>
+					</div>
+					<div class="col_6">
+						<div class="col_6">
+							<img src="img/sp4.jpg" width="100%">
+						</div>
+						<div class="col_6">
+							<p>
+								Infocomm Development Authority of Singapore
+							</p>
+						</div>
+					</div>
+				</div>
+				<p style="font-weight:bold">Bronze Sponsor</p>
+				<div class="col_12">
+					<div class="col_3">
+						<img src="img/sp5.jpg" width="100%">
+					</div>
+					<div class="col_3">
+						<img src="img/sp6.jpg" width="100%">
+					</div>
+					<div class="col_3">
+						<img src="img/sp7.jpg" width="100%">
+					</div>
+					<div class="col_3">
+						<img src="img/sp8.jpg" width="100%">
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="col_4">
+			<div>
+				<button class="clickable register" href="#" id="register_now"><span class="icon medium" data-icon="7"></span> Register Now</button>
+			</div>
+			
+			<div style="margin-top:20px" align="center">
+				<span class="icon social x-large" data-icon="F"></span>
+				<span class="icon social x-large" data-icon="E"></span>
+				<span class="icon social x-large" data-icon="G"></span>
+				<span class="icon social x-large" data-icon="I"></span>
+			</div>
+			<div id="sponsors" style="margin-top:12px; border:1px solid #EFEFEF; padding:10px">
+				<strong style="color:grey">Sponsored by:</strong>
+				<img src="img/sp1.png" width="80%" style="margin-bottom:12px; margin-left:10%">
+				<img src="img/sp2.png" width="80%" style="margin-bottom:12px; margin-left:10%">
+				<img src="img/sp3.png" width="80%" style="margin-bottom:12px; margin-left:10%">
+				<img src="img/sp4.jpg" width="80%" style="margin-bottom:12px; margin-left:10%">
+				<img src="img/sp5.jpg" width="80%" style="margin-bottom:12px; margin-left:10%">
+			</div>
+		</div>
+
+<!-- ===================================== START FOOTER ===================================== -->	
+	</div><!-- END WRAP -->
+	<script type="text/javascript" src="js/edit.js"></script>
+	<script type="text/javascript" src="js/date.js"></script>
+	<script type="text/javascript" src="js/api.js"></script>
+</body>
+</html>
